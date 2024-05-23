@@ -9,7 +9,7 @@ import gos_wire_protocol as gos
 from depthai_sdk import OakCamera
 import cv2
 from depthai_sdk.classes.enum import ResizeMode
-from depthai_sdk.oak_outputs.normalize_bb import NormalizeBoundingBox
+#from depthai_sdk.oak_outputs.normalize_bb import NormalizeBoundingBox
 from MJPEG_server import MJPEG_server
 from MJPEG_Frame import MJPEG_Frame
 
@@ -45,7 +45,8 @@ class OakDNode:
         #self.oak_comm_thread=None
         #self.should_quit=False
         self.name=name
-        self.node=Node.Node(name,"10.0.0.134") 
+        #self.node=Node.Node(name,"10.0.0.134") 
+        self.node=Node.Node(name,"10.0.0.10") 
         self.camera_topic=name+"/camera"      
         self.imu_topic=name+"/imu"
         self.tracker_topic=name+"/tracks"
@@ -55,7 +56,7 @@ class OakDNode:
 
         #self.nn_name='mobilenet'
         #self.nn_name="yolov8"
-        self.normalizer = NormalizeBoundingBox( (640,352),ResizeMode.LETTERBOX)
+        #self.normalizer = NormalizeBoundingBox( (640,352),ResizeMode.LETTERBOX)
         #self.mjpeg_server=MJPEG_server()
         #self.mjpeg_server.start_server(port=23033)
 
@@ -192,7 +193,8 @@ class OakDNode:
             spatial=t.spatialCoordinates
             bbox=roi.topLeft().x,roi.topLeft().y,roi.bottomRight().x,roi.bottomRight().y
             #bbox=roiData.roi.topLeft().x,roiData.roi.topLeft().y,roiData.roi.bottomRight().x,roiData.roi.bottomRight().y
-            nbbox = self.normalizer.normalize(packet.frame, bbox)
+            nbbox=bbox
+            #nbbox = self.normalizer.normalize(packet.frame, bbox)
             #nbbox=int(nbbox[0])
             #serialize
             detser={"id": id,"label": t.label,"status": status, "spatial": [spatial.x,spatial.y,spatial.z],"roi": [bbox[0],bbox[1],bbox[2],bbox[3]]}
@@ -228,7 +230,8 @@ class OakDNode:
             roiData = detection.boundingBoxMapping
             roi = roiData.roi
             bbox=roiData.roi.topLeft().x,roiData.roi.topLeft().y,roiData.roi.bottomRight().x,roiData.roi.bottomRight().y
-            nbbox = self.normalizer.normalize(packet.frame, bbox)
+            #nbbox = self.normalizer.normalize(packet.frame, bbox)
+            nbbox = bbox
 
             spatial=detection.spatialCoordinates
 
